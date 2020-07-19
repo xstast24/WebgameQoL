@@ -1,0 +1,2 @@
+# WebgameQoL
+WebgameQoL chrome extension
