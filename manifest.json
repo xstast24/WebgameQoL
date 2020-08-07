@@ -3,20 +3,21 @@
     "name": "Webgame QoL",
     "description": "Provide convenient utils for webgame.cz players.",
     "version": "0.1",
+    "author": "Bota007",
     "permissions": [
-        "http://*/*",
+        "storage",
         "https://*/*"
     ],
-    "background": {
-        "scripts": [
-            "background.js"
-        ],
-        "persistent": false
-    },
     "browser_action": {
-        "default_popup": "popup.html",
+        "default_popup": "popup/popup.html",
         "default_icon": "icon.png",
         "default_title": "Webgame QoL"
     },
-    "author": "Bota007"
+    "content_scripts": [
+        {
+            "js": ["content/content.js"],
+            "css": ["content/content.css"],
+            "matches": ["https://www.webgame.cz/*"]
+        }
+    ]
 }
