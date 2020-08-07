@@ -1,16 +1,16 @@
-document.getElementById('myCheck').onclick = myFunction;
+// TODO import CONFIG_KEYS from ./background/background.js; how to import? Why is there error?
 
 
-function myFunction() {
-  // Get the checkbox
-  var checkBox = document.getElementById("myCheck");
-  // Get the output text
-  var text = document.getElementById("myText");
+let log = chrome.extension.getBackgroundPage().console.log;
 
-  // If the checkbox is checked, display the output text
-  if (checkBox.checked == true){
-    text.style.display = "block";
-  } else {
-    text.style.display = "none";
-  }
+
+document.getElementById('switcherPricePer1Prestige').onclick = updateSettingPricePer1Prestige;
+
+
+function updateSettingPricePer1Prestige() {
+    let checkBox = document.getElementById("switcherPricePer1Prestige");
+    chrome.storage.local.get(['extensionActive'], function (value) {
+        log('Value currently is ' + JSON.stringify(value));
+    });
+    // if (checkBox.checked === true) TODO save checkbox.checked to config
 }

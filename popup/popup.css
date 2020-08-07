@@ -4,17 +4,27 @@ body {
   height: 100px;
 }
 
-.mainSwitch {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .mainTitle {
     font-weight: bold;
     font-size: large;
     margin-right: 10px;
+}
+
+.mainSwitch {
+    width: 100%;
+    display: flex;  /*FlexBox tutorial: https://www.w3schools.com/css/css3_flexbox.asp*/
+    justify-content: center; /*horizontally*/
+    align-items: center; /*vertically*/
+}
+
+.settingSwitches {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.settingSwitch {
+    width: 100%;
 }
 
 /* ROUNDED SWITCH https://www.w3schools.com/howto/howto_css_switch.asp */
