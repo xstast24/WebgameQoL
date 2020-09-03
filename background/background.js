@@ -1,9 +1,12 @@
 // initialize default config at the very first run
-chrome.storage.local.get([CONFIG_KEYS.firstRunEver], function (isFirstRun) {
+chrome.storage.local.get([CONFIG.KEYS.firstRunEver], function (isFirstRun) {
     if (isFirstRun === true) {
-        log('First run ever -> initializing the default config in local storage');
-        chrome.storage.local.set(DEFAULT_CONFIG, function () {
-            log('Default config initialized in local storage')
+        console.log('First run ever -> initializing the default config in local storage');
+        chrome.storage.local.set(CONFIG.DEFAULT, function () {
+            console.log('Default config initialized in local storage')
         });
-    } else {log('Config initialized')}
+        chrome.storage.local.set(SETTINGS.DEFAULT, function () {
+            console.log('Default feature settings initialized in local storage')
+        });
+    } else {console.log('Config already initialized')}
 });
