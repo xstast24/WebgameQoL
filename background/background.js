@@ -1,6 +1,3 @@
-let log = console.log;
-
-
 // initialize default config at the very first run
 chrome.storage.local.get([CONFIG_KEYS.firstRunEver], function (isFirstRun) {
     if (isFirstRun === true) {
