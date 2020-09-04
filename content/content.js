@@ -1,3 +1,6 @@
+console = chrome.extension.getBackgroundPage().console;
+
+
 //document.addEventListener('click', () => alert('Click occurred!'));
 
 function showMarketPriceForOnePrestige() {

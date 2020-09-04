@@ -1,23 +1,30 @@
+console = chrome.extension.getBackgroundPage().console;
+
+
 // show switches with actual values (enabled/disabled)
 loadAndDisplayCurrentSettings();
 
 // add listener to all switches that will save new value and update switch state
-document.getElementById(SETTINGS.KEYS.enabledPricePer1Prestige).addEventListener('click', function(){updateSettingPricePer1Prestige()});
+for (const setting in SETTINGS) {
+    console.log('Adding onClick listener to all setting switches...');
+    document.getElementById(setting).addEventListener('click', function(){updateSettingOnClick(setting)});
+}
 
 
 function loadAndDisplayCurrentSettings(){
-    for (const property in SETTINGS.KEYS) {
-
+    // load values for all setting-switches and update their states with actual values
+    for (const setting in SETTINGS) {
+        chrome.storage.local.get([setting], function (res) {
+            console.log(`Preparing popup: Loading setting "${setting}" value: ${res[setting]}`);
+            document.getElementById(setting).checked = res[setting];
+        });
     }
 }
 
 // TODO rework to general settings update with param
-function updateSettingPricePer1Prestige() {
-    let checkBox = document.getElementById(SETTINGS.KEYS.enabledPricePer1Prestige);
-    chrome.storage.local.get(SETTINGS.KEYS.extensionActive, function (value) {
-        console.log('Value currently is ' + JSON.stringify(value));
-    });
-    // if (checkBox.checked === true) TODO save checkbox.checked to config
+function updateSettingOnClick(setting) {
+    let checkBox = document.getElementById(setting);
+    chrome.storage.local.set({[setting]: checkBox.checked}, function () {
+            console.log(`TODO setting ${setting} to ${checkBox.checked}`) // TODO
+        });
 }
-
-//  TODO add config object with callable values? Is it posssible? Or just create getters/setters for cfg values?

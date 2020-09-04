@@ -15,14 +15,13 @@
     },
     "content_scripts": [
         {
-            "js": ["common.js", "content/content.js"],
+            "js": ["config.js", "common.js", "content/content.js"],
             "css": ["content/content.css"],
             "matches": ["https://www.webgame.cz/*"]
         }
     ],
     "background": {
-        //"page": "background/background.js",
-        "scripts": ["common.js", "background/background.js"],
+        "scripts": ["config.js", "common.js", "background/background.js"],
         "persistent": false
     }
 }
