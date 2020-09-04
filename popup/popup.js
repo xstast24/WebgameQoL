@@ -15,16 +15,16 @@ function loadAndDisplayCurrentSettings(){
     // load values for all setting-switches and update their states with actual values
     for (const setting in SETTINGS) {
         chrome.storage.local.get([setting], function (res) {
-            console.log(`Preparing popup: Loading setting "${setting}" value: ${res[setting]}`);
+            console.log(`Preparing popup: Loading "${setting}" value: ${res[setting]}`);
             document.getElementById(setting).checked = res[setting];
         });
     }
 }
 
-// TODO rework to general settings update with param
 function updateSettingOnClick(setting) {
+    // Save setting's new value to storage. Shall be used when user clicks any setting switch.
     let checkBox = document.getElementById(setting);
     chrome.storage.local.set({[setting]: checkBox.checked}, function () {
-            console.log(`TODO setting ${setting} to ${checkBox.checked}`) // TODO
+            console.log(`Setting switch: "${setting}" changed to: ${checkBox.checked}`)
         });
 }
