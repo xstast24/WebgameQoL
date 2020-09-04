@@ -15,4 +15,4 @@ chrome.storage.local.get('firstRunEver', function (res) {
     }
 });
 
-// chrome.storage.local.clear();
+//chrome.storage.local.clear();

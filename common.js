@@ -3,6 +3,10 @@
  * Namespace of all background scripts is shared (same applies for content/popup namespaces), so it works.
  * */
 
+function exit_script_execution() {
+   throw new Error('NOT ERROR: Just intentionally stopping script execution.');
+}
+
 // TODO save to storage not working? key was not passed aas string value, but as variable name to chrome storage - needs brackets {[key]: value}, TODO write to tips
 // function saveToStorage(key, value) {
 //     // Save given value (e.g. bool, dict) under given key (e.g. string) to a local Chrome storage
