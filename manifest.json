@@ -6,6 +6,8 @@
     "author": "Bota007",
     "permissions": [
         "storage",
+        "webRequest",
+        "webRequestBlocking",
         "https://*/*"
     ],
     "browser_action": {
@@ -22,6 +24,6 @@
     ],
     "background": {
         "scripts": ["config.js", "common.js", "background/background.js"],
-        "persistent": false
+        "persistent": true
     }
 }
