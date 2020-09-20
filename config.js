@@ -15,9 +15,11 @@ const CONFIG_KEYS = {
 
 // Settings that can be enabled by user via UI (webgame tweaks)
 const SETTINGS = {
-    enablePricePer1Prestige: false
+    enablePricePer1Prestige: false,
+    attacksTweaks: false
 };
 
 const SETTINGS_KEYS = {  // FIXME may be not needed in future? Let's see after some content job is done
-    enablePricePer1Prestige: 'enablePricePer1Prestige'
+    enablePricePer1Prestige: 'enablePricePer1Prestige',
+    attacksTweaks: 'attacksTweaks'
 };

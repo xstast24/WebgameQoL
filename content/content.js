@@ -40,8 +40,30 @@ function tweak_enablePricePer1Prestige() {
     }
 }
 
+/**TODO*/
+function tweak_attacksTweaks() {
+    if (window.location.search === '?p=valka' || window.location.search === '?p=valka&s=utok') {
+        let targetsTable = document.getElementById('war-alliance-members');
+        let targetsTableLines = targetsTable.getElementsByTagName('tr');
+        let targetLineCells, land, prestige, ratio;
+        for (let i = 0; i < targetsTableLines.length; i++) {
+            targetLineCells = targetsTableLines[i].getElementsByTagName('td');
+            if (targetLineCells.length < 7) {continue} //we want only lines with target info (7 attributes - name, land, prestige etc.), not ali names
+            land = targetLineCells[2].textContent.slice(0, -3); //remove ending "km2"
+            prestige = targetLineCells[3].textContent;
+            ratio = land / prestige * 1000; //land per 1000 prestige (more => easier target)
+            ratio = document.createTextNode(' ' + ratio.toFixed(1) + 'km/p');
+            targetLineCells[2].append(ratio);
+        }
+        console.log(`Tweak "${SETTINGS_KEYS.attacksTweaks}": Activated`);
+    } else {
+        console.log(`Tweak "${SETTINGS_KEYS.attacksTweaks}": Ignored (conditions not met)`)
+    }
+}
+
 function tweak_TODO() {
     console.log('TODO');
 }
+
 // alert("Error: No items with class 'mactprice' found.")
 // document.addEventListener('click', () => alert('Click occurred!'));

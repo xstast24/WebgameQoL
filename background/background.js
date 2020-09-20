@@ -1,3 +1,5 @@
+// chrome.storage.local.clear();  //TODO useful when adding new settings
+
 // initialize default config at the very first run
 chrome.storage.local.get('firstRunEver', function (res) {
     if (res['firstRunEver'] === false) {
@@ -23,6 +25,3 @@ chrome.webRequest.onBeforeRequest.addListener(
     },
     {urls: ["https://www.webgame.cz/wg/img/logo.gif", "https://www.webgame.cz/wg/styles/black/leftmenu_logo.png"]},
     ["blocking"]);  // synchronous -> block request until callback result is known
-
-
-//chrome.storage.local.clear();
