@@ -43,6 +43,14 @@ function tweak_enablePricePer1Prestige() {
 /**TODO*/
 function tweak_attacksTweaks() {
     if (window.location.search === '?p=valka' || window.location.search === '?p=valka&s=utok') {
+        //TODO
+        let infoBar = document.getElementById('uLista');
+        let landInfo = infoBar.getElementsByClassName('rdata')[3].getElementsByTagName('tr')[1];
+        let myLandRatio = myLand() / myPrestige() * 1000;
+        myLandRatio = document.createTextNode(' ' + myLandRatio.toFixed(1) + 'km/p');
+        landInfo.append(myLandRatio);
+
+
         let targetsTable = document.getElementById('war-alliance-members');
         let targetsTableLines = targetsTable.getElementsByTagName('tr');
         let targetLineCells, land, prestige, ratio;
@@ -63,6 +71,26 @@ function tweak_attacksTweaks() {
 
 function tweak_TODO() {
     console.log('TODO');
+}
+
+//TODO move
+function myPrestige() {
+    let infoBar = document.getElementById('uLista');
+    let xpath = "//strong[contains(text(),'Presti')]";
+    let presTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let presValue = presTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
+    return presValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
+}
+
+//TODO move
+function myLand() {
+    let infoBar = document.getElementById('uLista');
+    let xpath = "//strong[contains(text(),'Rozloha')]";
+    let landTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let landValue = landTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
+    console.log('LAND: ', landValue)
+    landValue = landValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
+    return landValue.slice(0, -3); //remove ending "km2"
 }
 
 // alert("Error: No items with class 'mactprice' found.")
