@@ -12,12 +12,12 @@ chrome.storage.local.get([CONFIG_KEYS.extensionActive], function (res) {
 /**Check all content tweaks. If turned ON -> apply it. If turned OFF -> ignore it.*/
 function runContentTweaks() {
     for (const tweak in SETTINGS_KEYS) {
-        console.log(`Tweak "${tweak}": Checking...`);
+        console.debug(`Tweak "${tweak}": Checking...`);
         chrome.storage.local.get(tweak, function (res) {
             if (res[tweak]) {
                 window['tweak_' + tweak](); // run tweak - evaluate dynamically by method name
             } else {
-                console.log(`Tweak "${tweak}": OFF`);
+                console.debug(`Tweak "${tweak}": OFF`);
             }
         });
     }
@@ -36,7 +36,7 @@ function tweak_enablePricePer1Prestige() {
         }
         console.log(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Activated`);
     } else {
-        console.log(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Ignored (conditions not met)`)
+        console.debug(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Ignored (conditions not met)`)
     }
 }
 
@@ -56,7 +56,9 @@ function tweak_attacksTweaks() {
         let targetLineCells, land, prestige, ratio;
         for (let i = 0; i < targetsTableLines.length; i++) {
             targetLineCells = targetsTableLines[i].getElementsByTagName('td');
-            if (targetLineCells.length < 7) {continue} //we want only lines with target info (7 attributes - name, land, prestige etc.), not ali names
+            if (targetLineCells.length < 7) {
+                continue
+            } //we want only lines with target info (7 attributes - name, land, prestige etc.), not ali names
             land = targetLineCells[2].textContent.slice(0, -3); //remove ending "km2"
             prestige = targetLineCells[3].textContent;
             ratio = land / prestige * 1000; //land per 1000 prestige (more => easier target)
@@ -65,32 +67,47 @@ function tweak_attacksTweaks() {
         }
         console.log(`Tweak "${SETTINGS_KEYS.attacksTweaks}": Activated`);
     } else {
-        console.log(`Tweak "${SETTINGS_KEYS.attacksTweaks}": Ignored (conditions not met)`)
+        console.debug(`Tweak "${SETTINGS_KEYS.attacksTweaks}": Ignored (conditions not met)`)
     }
 }
 
-function tweak_TODO() {
-    console.log('TODO');
+/**TODO*/
+function tweak_quickSpecialInfiltrations() {
+    // Opening of detailed inf goes through 4 screens, but URL changes only on the 1st one. However, once a document is reloaded, script stops execution, so we
+    // can't do everything in linear steps, we have to make if-branches and apply the specific one that is needed.
+    if (window.location.search.startsWith('?p=rozvedka&s=viewspye&msgid=')) {
+        console.debug('User opened infiltration details');
+        let infTable = document.getElementById('spy-message-summary');
+        let specialInfButton = getElementByText('Speciální infiltrace', infTable, 'a');
+        specialInfButton.click();
+    } else if (window.location.search.startsWith('?p=rozvedka&s=wgtabs_infiltration&selected_country=')) {
+        // Buttons stay on the screen, URL doesn't change, elements are added incrementally through 3 screens. We can't simply click the first button, then
+        // another etc. It would always click the first button and reload page in infinite loop. So we need to first check if elements of 3rd screen are
+        // present, then if 2nd are present, then if the first one.
+        let contentWindow = document.getElementById('icontent');
+        let confirmCountryButton = getElementByAttributeValue('value', 'Zvolit zemi', contentWindow, 'input'); //in the first confirmation screen
+        let selectInfiltrationButton = getElementByAttributeValue('value', 'Vybrat infiltrace', contentWindow, 'input'); //in the second confirmation screen
+        let chosenInfiltrationHeader = getElementByText('Zvolené infiltrace', contentWindow, 'h1'); //in the final screen
+        if (chosenInfiltrationHeader) {
+            console.debug('Final detailed inf - moving important tables to top');
+            let chosenInfiltrationBonusesHeader = getElementByText('Zjištěné bonusy', contentWindow, 'h1');
+            let infiltrationBonuses = chosenInfiltrationBonusesHeader.nextElementSibling;
+            let infiltrationDetails = chosenInfiltrationHeader.nextElementSibling;
+            contentWindow.prepend(infiltrationBonuses, infiltrationDetails);
+        } else if (selectInfiltrationButton) {
+            console.debug('Selecting inf');
+            getElementByAttributeValue('type', 'radio', document, 'input').click(); //pick the very first inf from the top
+            selectInfiltrationButton.click()
+        } else {
+            console.debug('Confirming country');
+            confirmCountryButton.click()
+        }
+    }
 }
 
-//TODO move
-function myPrestige() {
-    let infoBar = document.getElementById('uLista');
-    let xpath = "//strong[contains(text(),'Presti')]";
-    let presTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let presValue = presTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
-    return presValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
-}
-
-//TODO move
-function myLand() {
-    let infoBar = document.getElementById('uLista');
-    let xpath = "//strong[contains(text(),'Rozloha')]";
-    let landTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    let landValue = landTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
-    console.log('LAND: ', landValue)
-    landValue = landValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
-    return landValue.slice(0, -3); //remove ending "km2"
+function tweak_disableSidebarImages() {
+    // Does nothing. This is handled in background script, but due to dynamical evaluation of tweaks we need this function to exist, so exception is not raised.
+    // It could be solved by exception handling, but that should be reserved for real exceptions, this is known state, so it is easier to fully ignore it.
 }
 
 // alert("Error: No items with class 'mactprice' found.")

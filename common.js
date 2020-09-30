@@ -64,23 +64,55 @@ function saveDefaultConfigToChromeStorage(clearOldStorage = false) {
     });
 }
 
+/**Get current prestige from info bar on top
+ * return: prestige of the country (just the number, removed any spaces), e.g. 1200000*/
+function myPrestige() {
+    let infoBar = document.getElementById('uLista');
+    let xpath = "//strong[contains(text(),'Presti')]";
+    let presTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let presValue = presTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
+    return presValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
+}
+
+/**Get current land from info bar on top
+ * return: land of the country (just the number without unit), e.g. 6999*/
+function myLand() {
+    let infoBar = document.getElementById('uLista');
+    let xpath = "//strong[contains(text(),'Rozloha')]";
+    let landTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let landValue = landTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
+    landValue = landValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
+    return landValue.slice(0, -3); //remove ending "km2"
+}
+
+/**Get element by xpath. Search only in given context (element).
+ * return: (optional) matching element* */
+function getElementByXpath(xpath, contextElement = document) {
+    return document.evaluate(xpath, contextElement, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}
+
+/**Get first element with given text. Searches in children of given context element, based on element type.
+ * text: text that must be in the element (either contained or exactly matched - set via exactMatch param)
+ * contextElement: search only in a context of this element (and its children recursively)
+ * elementType: final element must be of this type, e.g. div/tr/a/td, or asterisk to for any type
+ * exactMatch: if disabled, element must contain the text and possibly anything else, e.g. searching for 'bar' will return element with 'foobarbaz',
+ *      if enabled, search only for exact text match (not recommended)
+ * return: (optional) element containing the given text*/
+function getElementByText(text, contextElement = document, elementType = '*', exactMatch = false) {
+    let query = exactMatch ? `//${elementType}[text()='${text}')]` : `//${elementType}[contains(text(), '${text}')]`;
+    return getElementByXpath(query, contextElement)
+}
+
+/**Get first element matching given attribute's value. Searches in children of given context element, based on element type.
+ * attribute: attribute of the element
+ * value: value of the attribute
+ * contextElement: search only in a context of this element (and its children recursively)
+ * elementType: final element must be of this type, e.g. div/tr/a/td, or asterisk to for any type
+ * return: (optional) matching element*/
+function getElementByAttributeValue(attribute, value, contextElement = document, elementType = '*') {
+    let query = `//${elementType}[@${attribute}="${value}"]`;
+    return getElementByXpath(query, contextElement)
+}
 function exitScriptExecution() {
     throw new Error('NOT ERROR: Just intentionally stopping script execution.');
 }
-
-// TODO save to storage not working? key was not passed aas string value, but as variable name to chrome storage - needs brackets {[key]: value}, TODO write to tips
-// function saveToStorage(key, value) {
-//     // Save given value (e.g. bool, dict) under given key (e.g. string) to a local Chrome storage
-//     chrome.storage.local.set({key: value}, function () {
-//         console.log(`Storage: Set key "${key}" to value: ${JSON.stringify(value)}`);
-//     });
-// }
-
-// FIXME async storage loading cant return value directly, need callback. Maybe fix with PROMISE lib? https://github.com/kriskowal/q
-// function loadFromStorage(key) {
-//     // Load value of given key (e.g. string) from a local Chrome storage
-//     chrome.storage.local.get(key, function (resultDict) {
-//         console.log(`Storage: Loaded key "${key}" with value: ${JSON.stringify(resultDict.key)}`); // stringify displays object details and doesn't affect simple numbers/bool
-//     });
-//     return resultDict.key; // THIS DOES NOT WORK, async loading from storage cant return value
-// }
