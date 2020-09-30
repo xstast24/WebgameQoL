@@ -16,7 +16,7 @@ chrome.storage.local.get(CONFIG_KEYS.lastRunningVersion, function (res) {
         console.log(`No update. Current version matches the last running version: ${this_version}`)
     } else {
         console.log(`Extension updated. New version: ${this_version}. Previous version: ${previous_version}. Reloading config...`);
-        saveDefaultConfigToChromeStorage(false);
+        saveDefaultConfigToChromeStorage(true);
         chrome.storage.local.set({[CONFIG_KEYS.lastRunningVersion]: this_version}, function () {
             console.log(`Saving current version ${this_version} as last running version`)
         });
@@ -25,15 +25,17 @@ chrome.storage.local.get(CONFIG_KEYS.lastRunningVersion, function (res) {
 
 
 // block loading of some images on the sidebar - is here (not in content scripts) to prevent even requesting of the images, so no data are transferred
-chrome.storage.local.get(CONFIG_KEYS.disableSidebarImages, function (res) {
-    if (res[CONFIG_KEYS.disableSidebarImages]) {
-        console.log(`Tweaks "${CONFIG_KEYS.disableSidebarImages}" is ON. Disabled requests for images (may save some data and offload the server).`);
+chrome.storage.local.get(SETTINGS_KEYS.disableSidebarImages, function (res) { //FIXME document somwhere - can't change while running, needs extension reload
+    console.log('DSA');
+    console.log('asd', JSON.stringify(res));
+    if (res[SETTINGS_KEYS.disableSidebarImages]) {
+
+        console.log(`Tweaks "${SETTINGS_KEYS.disableSidebarImages}" is ON. Disabled requests for images (may save some data and offload the server).`);
         chrome.webRequest.onBeforeRequest.addListener(
             function (details) {
                 return {cancel: true};
             },
             {urls: ["https://www.webgame.cz/wg/img/logo.gif", "https://www.webgame.cz/wg/styles/black/leftmenu_logo.png"]},
             ["blocking"]);  // synchronous -> block request until callback result is known
-
     }
 });
