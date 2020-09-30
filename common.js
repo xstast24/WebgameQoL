@@ -68,8 +68,7 @@ function saveDefaultConfigToChromeStorage(clearOldStorage = false) {
  * return: prestige of the country (just the number, removed any spaces), e.g. 1200000*/
 function myPrestige() {
     let infoBar = document.getElementById('uLista');
-    let xpath = "//strong[contains(text(),'Presti')]";
-    let presTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let presTitleElem = getElementByText('Presti', infoBar, 'strong');
     let presValue = presTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
     return presValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
 }
@@ -78,11 +77,15 @@ function myPrestige() {
  * return: land of the country (just the number without unit), e.g. 6999*/
 function myLand() {
     let infoBar = document.getElementById('uLista');
-    let xpath = "//strong[contains(text(),'Rozloha')]";
-    let landTitleElem = document.evaluate(xpath, infoBar, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    let landTitleElem = getElementByText('Rozloha', infoBar, 'strong');
     let landValue = landTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
     landValue = landValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
     return landValue.slice(0, -3); //remove ending "km2"
+}
+
+/**Get just the direct text of given element, not of its children. E.g. <div>directText<red>childText</red></div> returns only "directText"*/
+function getTextExcludingChildren(element) {
+    return element.childNodes[0].nodeValue
 }
 
 /**Get element by xpath. Search only in given context (element).

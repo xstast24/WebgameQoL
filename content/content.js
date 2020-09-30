@@ -26,13 +26,14 @@ function runContentTweaks() {
 /**Display price per 1 prestige in world market.*/
 function tweak_enablePricePer1Prestige() {
     if (window.location.search === '?p=svetovy_trh' || window.location.search === '?p=svetovy_trh&s=trhkoupit') {
-        let marketRow, unit, priceCell, pricePerPrestige;
-        for (let i = 3; i <= 7; i++) {  // row3 = voja ... row7 = mech
+        let marketRow, unit, priceCell, price, pricePerPrestige;
+        for (let i = 4; i <= 7; i++) {  // (row3=voja -> not needed), row4=tank ... row7=mech
             marketRow = document.getElementById('wt_row_' + i);
             priceCell = marketRow.getElementsByClassName('mactprice')[0];
             unit = marketRow.getElementsByClassName('rname')[0].textContent;
-            pricePerPrestige = priceCell.textContent / getPrestige(unit);
-            priceCell.textContent = priceCell.textContent + ' ppp' + pricePerPrestige.toFixed(0);
+            price = getTextExcludingChildren(priceCell);
+            pricePerPrestige = price / getPrestige(unit);
+            priceCell.textContent = price + ' ppp' + pricePerPrestige.toFixed(0);
         }
         console.log(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Activated`);
     } else {
