@@ -1,27 +1,39 @@
-// chrome.storage.local.clear();  //TODO useful when adding new settings
-
 // initialize default config at the very first run
-chrome.storage.local.get('firstRunEver', function (res) {
-    if (res['firstRunEver'] === false) {
+chrome.storage.local.get(CONFIG_KEYS.firstRunEver, function (res) {
+    if (res[CONFIG_KEYS.firstRunEver] === false) {
         console.log('Config already initialized')
     } else {
         console.log('First run ever -> initializing defaults...');
-        chrome.storage.local.set({'firstRunEver': false}, null);  // first run mark save -> next run not re-initialized
+        saveDefaultConfigToChromeStorage(true);
+    }
+});
 
-        chrome.storage.local.set(CONFIG, function () {
-            console.log('Default config initialized in local storage')
-        });
-        chrome.storage.local.set(SETTINGS, function () {
-            console.log('Default feature settings initialized in local storage')
+// reload config on update
+chrome.storage.local.get(CONFIG_KEYS.lastRunningVersion, function (res) {
+    const previous_version = res[CONFIG_KEYS.lastRunningVersion];
+    const this_version = chrome.runtime.getManifest().version;
+    if (previous_version === this_version) {
+        console.log(`No update. Current version matches the last running version: ${this_version}`)
+    } else {
+        console.log(`Extension updated. New version: ${this_version}. Previous version: ${previous_version}. Reloading config...`);
+        saveDefaultConfigToChromeStorage(false);
+        chrome.storage.local.set({[CONFIG_KEYS.lastRunningVersion]: this_version}, function () {
+            console.log(`Saving current version ${this_version} as last running version`)
         });
     }
 });
 
 
-// TODO config to enable/disable this? maybe check in callback and change SETTINGS config to CONTENT_SETTINGS and the other configs just handle manually in popup
-chrome.webRequest.onBeforeRequest.addListener(
-    function (details) {
-        return {cancel: true};
-    },
-    {urls: ["https://www.webgame.cz/wg/img/logo.gif", "https://www.webgame.cz/wg/styles/black/leftmenu_logo.png"]},
-    ["blocking"]);  // synchronous -> block request until callback result is known
+// block loading of some images on the sidebar - is here (not in content scripts) to prevent even requesting of the images, so no data are transferred
+chrome.storage.local.get(CONFIG_KEYS.disableSidebarImages, function (res) {
+    if (res[CONFIG_KEYS.disableSidebarImages]) {
+        console.log(`Tweaks "${CONFIG_KEYS.disableSidebarImages}" is ON. Disabled requests for images (may save some data and offload the server).`);
+        chrome.webRequest.onBeforeRequest.addListener(
+            function (details) {
+                return {cancel: true};
+            },
+            {urls: ["https://www.webgame.cz/wg/img/logo.gif", "https://www.webgame.cz/wg/styles/black/leftmenu_logo.png"]},
+            ["blocking"]);  // synchronous -> block request until callback result is known
+
+    }
+});

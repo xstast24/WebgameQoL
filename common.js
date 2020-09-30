@@ -49,6 +49,21 @@ function getPrestige(unit, count = 1) {
     }
 }
 
+/**Save default configs to chrome storage. Use param 'clearOldStorage' to delete old storage data before saving the new data.*/
+function saveDefaultConfigToChromeStorage(clearOldStorage = false) {
+    if (clearOldStorage) {
+        chrome.storage.local.clear();
+        console.log('Cleared Chrome storage')
+    }
+
+    chrome.storage.local.set(CONFIG, function () {
+        console.log('Default config initialized in local storage')
+    });
+    chrome.storage.local.set(SETTINGS, function () {
+        console.log('Default feature settings initialized in local storage')
+    });
+}
+
 function exitScriptExecution() {
     throw new Error('NOT ERROR: Just intentionally stopping script execution.');
 }
