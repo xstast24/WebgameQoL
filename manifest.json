@@ -2,13 +2,13 @@
     "manifest_version": 2,
     "name": "Webgame QoL",
     "description": "Provide convenient utils for webgame.cz players.",
-    "version": "0.6",
+    "version": "0.7",
     "author": "Bota007",
     "permissions": [
         "storage",
         "webRequest",
         "webRequestBlocking",
-        "https://*/*"
+        "https://www.webgame.cz/*"
     ],
     "browser_action": {
         "default_popup": "popup/popup.html",
@@ -19,7 +19,7 @@
         {
             "js": ["config.js", "common.js", "content/content.js"],
             "css": ["content/content.css"],
-            "matches": ["https://www.webgame.cz/*"]
+            "matches": ["https://www.webgame.cz/wg/index.*"]
         }
     ],
     "background": {

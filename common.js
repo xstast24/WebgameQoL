@@ -64,11 +64,22 @@ function saveDefaultConfigToChromeStorage(clearOldStorage = false) {
     });
 }
 
+/**Get info bar on top of the page (with info about my country).
+ * return: (optional) infobar elem*/
+function getTopBar() {
+    return document.getElementById('uLista');
+}
+
+/**Get side bar (the menu on the left side of the page).
+ * return: (optional) sidebar elem*/
+function getSideBar() {
+    return document.getElementById('left_menu');
+}
+
 /**Get current prestige from info bar on top
  * return: prestige of the country (just the number, removed any spaces), e.g. 1200000*/
 function myPrestige() {
-    let infoBar = document.getElementById('uLista');
-    let presTitleElem = getElementByText('Presti', infoBar, 'strong');
+    let presTitleElem = getElementByText('Presti', getTopBar(), 'strong');
     let presValue = presTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
     return presValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
 }
@@ -76,8 +87,7 @@ function myPrestige() {
 /**Get current land from info bar on top
  * return: land of the country (just the number without unit), e.g. 6999*/
 function myLand() {
-    let infoBar = document.getElementById('uLista');
-    let landTitleElem = getElementByText('Rozloha', infoBar, 'strong');
+    let landTitleElem = getElementByText('Rozloha', getTopBar(), 'strong');
     let landValue = landTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
     landValue = landValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
     return landValue.slice(0, -3); //remove ending "km2"
@@ -116,6 +126,13 @@ function getElementByAttributeValue(attribute, value, contextElement = document,
     let query = `//${elementType}[@${attribute}="${value}"]`;
     return getElementByXpath(query, contextElement)
 }
+
+/** Async sleep method. Can be only used in "async function", pauses only execution of that function, nothing else.
+ * Example usage: while(x==y){await sleep(1000); console.log(do something every second);} */
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function exitScriptExecution() {
     throw new Error('NOT ERROR: Just intentionally stopping script execution.');
 }

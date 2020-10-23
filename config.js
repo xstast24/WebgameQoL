@@ -22,12 +22,14 @@ const SETTINGS = {
     enablePricePer1Prestige: false,
     attacksTweaks: false,
     quickSpecialInfiltrations: false,
-    disableSidebarImages: false //prevent some images from loading
+    disableSidebarImages: false, //prevent some images from loading
+    sidebarDirectLinks: false, //some sidebar links will directly open common sub-pages etc.
 };
 
 const SETTINGS_KEYS = {
     enablePricePer1Prestige: 'enablePricePer1Prestige',
     attacksTweaks: 'attacksTweaks',
     quickSpecialInfiltrations: 'quickSpecialInfiltrations',
-    disableSidebarImages: 'disableSidebarImages'
+    disableSidebarImages: 'disableSidebarImages',
+    sidebarDirectLinks: 'sidebarDirectLinks',
 };

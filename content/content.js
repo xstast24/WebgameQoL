@@ -24,20 +24,24 @@ function runContentTweaks() {
 }
 
 /**Display price per 1 prestige in world market.*/
-function tweak_enablePricePer1Prestige() {
-    if (window.location.search === '?p=svetovy_trh' || window.location.search === '?p=svetovy_trh&s=trhkoupit') {
-        let marketRow, unit, priceCell, price, pricePerPrestige;
+async function tweak_enablePricePer1Prestige() {
+    if (window.location.search !== '?p=svetovy_trh' && window.location.search !== '?p=svetovy_trh&s=trhkoupit') {
+        console.debug(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Ignored (conditions not met)`)
+    }
+
+    console.log(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Activated`);
+    let marketRow, unit, priceCell, price, pricePerPrestige;
+    while (window.location.search === '?p=svetovy_trh' || window.location.search === '?p=svetovy_trh&s=trhkoupit') {
         for (let i = 4; i <= 7; i++) {  // (row3=voja -> not needed), row4=tank ... row7=mech
             marketRow = document.getElementById('wt_row_' + i);
             priceCell = marketRow.getElementsByClassName('mactprice')[0];
             unit = marketRow.getElementsByClassName('rname')[0].textContent;
             price = getTextExcludingChildren(priceCell);
+            price = price.split(' ')[0]; // remove the added price per prestige (needed if applied multiple times without changes on market)
             pricePerPrestige = price / getPrestige(unit);
-            priceCell.textContent = price + ' ppp' + pricePerPrestige.toFixed(0);
+            priceCell.textContent = price + ' p' + pricePerPrestige.toFixed(0);
         }
-        console.log(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Activated`);
-    } else {
-        console.debug(`Tweak "${SETTINGS_KEYS.enablePricePer1Prestige}": Ignored (conditions not met)`)
+        await sleep(50);
     }
 }
 
@@ -106,10 +110,21 @@ function tweak_quickSpecialInfiltrations() {
     }
 }
 
+/**Don't load sidebar images.*/
 function tweak_disableSidebarImages() {
     // Does nothing. This is handled in background script, but due to dynamical evaluation of tweaks we need this function to exist, so exception is not raised.
     // It could be solved by exception handling, but that should be reserved for real exceptions, this is known state, so it is easier to fully ignore it.
 }
 
-// alert("Error: No items with class 'mactprice' found.")
-// document.addEventListener('click', () => alert('Click occurred!'));
+/**Some sidebar links in STANDARD MENU will lead directly to most common subpage, e.g. forum->ali forum, not just an empty page*/
+function tweak_sidebarDirectLinks() {
+    let sidebar = getSideBar();
+    // forum opens directly ali-forum (not just empty page)
+    getElementByText('Fórum', sidebar, 'a').setAttribute('href', 'index.php?p=forum&prefix=aliancni');
+    // conflicts will open ali-wars stats (not just empty page)
+    getElementByText('Konflikty', sidebar, 'a').setAttribute('href', 'index.php?p=konflikty&s=awarstat');
+    // government will open "pujcky/rozvoj"
+    getElementByText('Vláda', sidebar, 'a').setAttribute('href', 'index.php?p=vlada&s=rozvoj')
+
+    console.log(`Tweak "${SETTINGS_KEYS.sidebarDirectLinks}": Activated`);
+}
