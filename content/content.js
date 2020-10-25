@@ -66,7 +66,7 @@ function tweak_attacksTweaks() {
             } //we want only lines with target info (7 attributes - name, land, prestige etc.), not ali names
             land = targetLineCells[2].textContent.slice(0, -3); //remove ending "km2"
             prestige = targetLineCells[3].textContent;
-            ratio = land / prestige * 1000; //land per 1000 prestige (more => easier target)
+            ratio = land / prestige * 1000; //land per 1000 prestige (land / (prestige/1000)), more => easier target
             ratio = document.createTextNode(' ' + ratio.toFixed(1) + 'km/p');
             targetLineCells[2].append(ratio);
         }
