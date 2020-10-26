@@ -6,11 +6,11 @@
     <link rel="stylesheet" type="text/css" href="popup.css">
 </head>
 <body>
-    <h1 class="mainTitle">Webgame QoL by Bota</h1>
+    <h1 class="mainTitle">Webgame QoL by Bota007</h1>
 
     <div class="mainSwitch">
         <label class="switch"><input id="extensionActive" type="checkbox"> <span class="slider round"></span></label>
-        <span class="extensionStateLabel" id="extensionStateLabel">ZAPNUTO</span>
+        <label class="extensionStateLabel" id="extensionStateLabel">Loading...</label>
     </div>
 
     <div class="settingSwitches">
@@ -21,7 +21,7 @@
                 <span class="tooltipTextAbove">
                     Na světovém trhu zobrazí za běžnou cenou navíc i přepočtenou cenu za 1 bod prestiže.
                     Např. tank dává 5 prestiže, při ceně 1000 tedy stojí jedna prestiž 200. V kolonce ceny proto bude "1000 p200".
-                    PS: Ignoruje spojenecké jednotky, které nejdou koupit.
+                    Pozor: Nezobrazuje cenu případných spojeneckých jednotek (nejdou koupit -> nepodstatné).
                 </span>
             </span>
         </label>
@@ -33,7 +33,7 @@
                 <span class="tooltipTextAbove">
                     V okně válek (útoků/detailů armády) ukazuje u cílů poměr rozlohy ku prestiži, např. 15.9km/p (počet km na 1000 presu).
                     Nahoře v liště je pro porovnání tento poměr uveden i pro moji zemi (vpravo u rozlohy).
-                    PS: vychází pouze z veřejných údajů o zemi, nebere v potaz infiltrace (= ignoruje reálný počet jednotek či sílu obrany).
+                    Pozor: vychází pouze z veřejných údajů o zemi, nebere v potaz infiltrace (= ignoruje reálný počet jednotek či sílu obrany).
                 </span>
             </span>
         </label>
@@ -43,7 +43,10 @@
             <span class="tooltipOnHover">
                 Rychlé otevírání speciálních infiltrací
                 <span class="tooltipTextAbove">
-                    TODO
+                    Automaticky otevírá detailní rozbor infu (spceiální inf) místo základního infu, což jinak ručně vyžadovalo 5-6 kliknutí a 3 načítání navíc,
+                    pro 10 zemí se tak jednalo o 50+ kliků navíc (neskutečně otravné a zdržujicí). Vychází pouze z nejaktuálnějšího infu vlády, protože by měl
+                    obsahovat nejvíc informací. Pozor: ignoruje infy generálního štábu (a jiné) i pokud jsou novější než infy vlády! Inf generálního štábu je
+                    použit pouze pokud neexistuje žádný inf vlády.
                 </span>
             </span>
         </label>
@@ -53,7 +56,9 @@
             <span class="tooltipOnHover">
                 Nenačítat obrázky na boční liště
                 <span class="tooltipTextAbove">
-                    TODO
+                    Blokuje stahování obrázků na boční liště -> ušetří par kilobajtů síťového provozu. Teoreticky by mohlo malinko odlehčit zasekanému serveru
+                    ke konci věku. Prakticky pak WG taky nevypadá tolik jako hra, když vám někdo kouká přes rameno. xD
+                    Pozor: změna se reflektuje až po restartu prohlížeče (ne hned "za běhu").
                 </span>
             </span>
         </label>
@@ -61,9 +66,11 @@
         <label class="settingSwitch" for="sidebarDirectLinks">
             <input id="sidebarDirectLinks" type="checkbox">
             <span class="tooltipOnHover">
-                Přímo otvírat ali fórum, války ali, atp.
+                Přímo otvírat často používané sekce (ali fórum atp.)
                 <span class="tooltipTextAbove">
-                    TODO
+                    Při otevření např. položky "fórum" ve standardním menu je otevřena pouze prázdná stránka a je nutné vždy vybírat ali fórum až následně
+                    (tj. 1 klik a 1 načtení stránky navíc). Toto vylepšení po vybrání položky otevře přímo nějakou často používanou sekci: fórum -> alianční,
+                    konflikty -> války aliance (stav válek), vláda -> rozvojová země (půjčky a rozvoj).
                 </span>
             </span>
         </label>

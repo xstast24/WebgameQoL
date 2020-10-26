@@ -32,7 +32,7 @@ body {
 }
 
 .settingSwitch {
-    width: 60%;
+    width: 100%;
 }
 
 /*TOOLTIP ON HOVER*/
@@ -69,9 +69,14 @@ body {
     border-color: #555 transparent transparent transparent;
 }
 
-.tooltipOnHover:hover .tooltipTextAbove {
+.tooltipOnHover:hover .tooltipTextAbove { /*Display tooltip when hovering the parent element.*/
     visibility: visible;
     opacity: 1;
+}
+
+.tooltipOnHover .tooltipTextAbove:hover { /*Hide tooltip if hovering over the tooltip itself (to prevent covering of other elements).*/
+    visibility: hidden;
+    opacity: 0;
 }
 
 /* ROUNDED SWITCH https://www.w3schools.com/howto/howto_css_switch.asp */

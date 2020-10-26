@@ -6,13 +6,28 @@ loadAndDisplayCurrentSettings();
 
 // add listeners to all switches (to save new values to storage)
 console.debug('Adding onClick update listener to all switches...');
+// main switch
 document.getElementById(CONFIG_KEYS.extensionActive).addEventListener('click', function () {
-    updateSettingOnClick(CONFIG_KEYS.extensionActive)
-}); // main switch
-for (const setting in SETTINGS) { // all other switches
+    updateSettingOnClick(CONFIG_KEYS.extensionActive);
+    updateMainSwitchLabel();
+});
+// all other switches
+for (const setting in SETTINGS) {
     document.getElementById(setting).addEventListener('click', function () {
         updateSettingOnClick(setting)
     });
+}
+
+/**Main switch has a text label that says if it is enabled/disabled*/
+function updateMainSwitchLabel() {
+    let extensionStateLabel = document.getElementById('extensionStateLabel');
+    if (document.getElementById('extensionActive').checked) {
+        extensionStateLabel.textContent = 'ZAPNUTO';
+        extensionStateLabel.style.color = 'green';
+    } else {
+        extensionStateLabel.textContent = 'VYPNUTO';
+        extensionStateLabel.style.color = 'red';
+    }
 }
 
 /**Load values for all switches and update their states with actual values*/
@@ -21,6 +36,7 @@ function loadAndDisplayCurrentSettings() {
     chrome.storage.local.get([CONFIG_KEYS.extensionActive], function (res) {
         console.debug(`Preparing popup: Loading "${CONFIG_KEYS.extensionActive}" value: ${res[CONFIG_KEYS.extensionActive]}`);
         document.getElementById(CONFIG_KEYS.extensionActive).checked = res[CONFIG_KEYS.extensionActive];
+        updateMainSwitchLabel();
     });
     // all other switches
     for (const setting in SETTINGS) {
