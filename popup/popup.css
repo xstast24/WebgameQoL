@@ -1,7 +1,8 @@
 /* WINDOW SIZE */
 body {
     width: 500px;
-    height: 300px;
+    height: 400px;
+    background: radial-gradient(ellipse at top, lightblue, transparent), radial-gradient(ellipse at bottom, honeydew, transparent);
 }
 
 /*MAIN SWITCH*/
@@ -33,6 +34,16 @@ body {
 
 .settingSwitch {
     width: 100%;
+}
+
+/*BOTTOM DISCLAIMER*/
+.bottomDisclaimer {
+    display: flex;
+    position: absolute;
+    bottom: 5px;
+    font-style: italic;
+    font-size: xx-small;
+    color: #555555;
 }
 
 /*TOOLTIP ON HOVER*/
