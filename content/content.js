@@ -98,6 +98,21 @@ function tweak_quickSpecialInfiltrations() {
             let chosenInfiltrationBonusesHeader = getElementByText('Zjištěné bonusy', contentWindow, 'h1');
             let infiltrationBonuses = chosenInfiltrationBonusesHeader.nextElementSibling;
             let infiltrationDetails = chosenInfiltrationHeader.nextElementSibling;
+
+            // TODO separate option? adds colored sum of techs to the bottom of the infiltration
+            let techNamesElem = getElementByText('Rychlost stavby', infiltrationDetails, 'td', false);
+            let techValuesElem = techNamesElem.nextElementSibling;
+            let techValues = techValuesElem.innerHTML.split('<br>').map(x => Number(x));  // all techs are in one element, strings separated by <br>
+            let coveredBySilaRozvedky = techValues[TECH.silaRozvedky] * TECH_COVERAGE_MULTIPLIER;
+            let uncoveredTechSum = 0;
+            techValues.forEach(function(item, index) {uncoveredTechSum += Math.max(0, item - coveredBySilaRozvedky)}) // count uncovered
+            // display total sum of tech
+            techNamesElem.innerHTML += '<br><span style="color:greenyellow;">Celkem</span>'
+            techValuesElem.innerHTML += `<br><span style="color:greenyellow;">${sumArray(techValues)}</span>`
+            // display techs uncovered by silaRozvedky (= can be stolen)
+            techNamesElem.innerHTML += '<br><span style="color:orange;">Nepokryto</span>'
+            techValuesElem.innerHTML += `<br><span style="color:orange;">${uncoveredTechSum}</span>`
+
             contentWindow.prepend(infiltrationBonuses, infiltrationDetails);
         } else if (selectInfiltrationButton) {
             console.debug('Selecting inf');
@@ -108,6 +123,7 @@ function tweak_quickSpecialInfiltrations() {
             confirmCountryButton.click()
         }
     }
+    console.log(`Tweak "${SETTINGS_KEYS.quickSpecialInfiltrations}": Activated`);
 }
 
 /**Don't load sidebar images.*/

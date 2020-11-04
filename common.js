@@ -1,53 +1,8 @@
-/**
+/** COMMON JS/HTML/CHROME STUFF
  * This script is intended to be loaded after config.js and before background/content/popup JS scripts, so they can use the common functionality.
  * Namespace of all background scripts is shared (same applies for content/popup namespaces), so it works.
  * */
 
-const UNITS = {
-    voja: 'Vojáci',
-    tank: 'Tanky',
-    stih: 'Stíhačky',
-    mech: 'Mechové',
-    bunk: 'Bunkry'
-};
-
-const COMMODITY = {
-    jidl: 'Jídlo',
-    ener: 'Energie',
-    voja: 'Vojáci',
-    tank: 'Tanky',
-    stih: 'Stíhačky',
-    mech: 'Mechové',
-    bunk: 'Bunkry'
-};
-
-const PRESTIGE = {
-    'Jídlo': 0.02,
-    'Energie': 0.02,
-    'Vojáci': 1,
-    'Tanky': 5,
-    'Stíhačky': 3.5,
-    'Mechové': 3.5,
-    'Bunkry': 2.7
-};
-
-/**Calculate prestige for given type and amount of units*/
-function getPrestige(unit, count = 1) {
-    switch (unit) {
-        case UNITS.voja:
-            return count;
-        case UNITS.tank:
-            return count * 5;
-        case UNITS.stih:
-            return count * 3.5;
-        case UNITS.bunk:
-            return count * 3.5;
-        case UNITS.mech:
-            return count * 2.7;
-        default:
-            throw `ERROR: Can't get prestige for unknown unit type: ${unit}`;
-    }
-}
 
 /**Save default configs to chrome storage. Use param 'clearOldStorage' to delete old storage data before saving the new data.*/
 function saveDefaultConfigToChromeStorage(clearOldStorage = false) {
@@ -62,35 +17,6 @@ function saveDefaultConfigToChromeStorage(clearOldStorage = false) {
     chrome.storage.local.set(SETTINGS, function () {
         console.log('Default feature settings initialized in local storage')
     });
-}
-
-/**Get info bar on top of the page (with info about my country).
- * return: (optional) infobar elem*/
-function getTopBar() {
-    return document.getElementById('uLista');
-}
-
-/**Get side bar (the menu on the left side of the page).
- * return: (optional) sidebar elem*/
-function getSideBar() {
-    return document.getElementById('left_menu');
-}
-
-/**Get current prestige from info bar on top
- * return: prestige of the country (just the number, removed any spaces), e.g. 1200000*/
-function myPrestige() {
-    let presTitleElem = getElementByText('Presti', getTopBar(), 'strong');
-    let presValue = presTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
-    return presValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
-}
-
-/**Get current land from info bar on top
- * return: land of the country (just the number without unit), e.g. 6999*/
-function myLand() {
-    let landTitleElem = getElementByText('Rozloha', getTopBar(), 'strong');
-    let landValue = landTitleElem.parentNode.nextElementSibling; //title is not directly in td, but in child <strong> -> parent first, then sibling
-    landValue = landValue.textContent.replace(/\s/g, ''); //remove whitespaces (even in the middle of number), g=repeat
-    return landValue.slice(0, -3); //remove ending "km2"
 }
 
 /**Get just the direct text of given element, not of its children. E.g. <div>directText<red>childText</red></div> returns only "directText"*/
@@ -125,6 +51,11 @@ function getElementByText(text, contextElement = document, elementType = '*', ex
 function getElementByAttributeValue(attribute, value, contextElement = document, elementType = '*') {
     let query = `//${elementType}[@${attribute}="${value}"]`;
     return getElementByXpath(query, contextElement)
+}
+
+function sumArray(array) {
+    // 0 is initial value. The '+' before a/b is just to convert string-numbers to numbers, it doesn't affect negative numbers or anything.
+    return array.reduce((a,b) => +a + +b, 0)
 }
 
 /** Async sleep method. Can be only used in "async function", pauses only execution of that function, nothing else.

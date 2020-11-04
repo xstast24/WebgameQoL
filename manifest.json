@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Webgame QoL",
   "description": "Provide convenient utils for webgame.cz players.",
-  "version": "1.0",
+  "version": "1.1",
   "author": "Bota007",
   "permissions": [
     "storage",
@@ -24,6 +24,8 @@
       "js": [
         "config.js",
         "common.js",
+        "wg_common.js",
+        "wg_intelligence.js",
         "content/content.js"
       ],
       "css": [
