@@ -48,7 +48,7 @@ async function tweak_enablePricePer1Prestige() {
 /**TODO*/
 function tweak_attacksTweaks() {
     if (window.location.search === '?p=valka' || window.location.search === '?p=valka&s=utok') {
-        //TODO
+        //add my KMs/pres ratio to infobar
         let infoBar = document.getElementById('uLista');
         let landInfo = infoBar.getElementsByClassName('rdata')[3].getElementsByTagName('tr')[1];
         let myLandRatio = myLand() / myPrestige() * 1000;
@@ -58,17 +58,23 @@ function tweak_attacksTweaks() {
 
         let targetsTable = document.getElementById('war-alliance-members');
         let targetsTableLines = targetsTable.getElementsByTagName('tr');
-        let targetLineCells, land, prestige, ratio;
+        let myPres = myPrestige();
+        let targetLineCells, land, presElem, pres, ratio;
         for (let i = 0; i < targetsTableLines.length; i++) {
             targetLineCells = targetsTableLines[i].getElementsByTagName('td');
-            if (targetLineCells.length < 7) {
-                continue
-            } //we want only lines with target info (7 attributes - name, land, prestige etc.), not ali names
+            if (targetLineCells.length < 7) {continue} //we want only lines with target info (7 attributes - name, land, prestige etc.), not ali names
+
+            presElem = targetLineCells[3];
+
+            //add KMs per prestige
             land = targetLineCells[2].textContent.slice(0, -3); //remove ending "km2"
-            prestige = targetLineCells[3].textContent;
-            ratio = land / prestige * 1000; //land per 1000 prestige (land / (prestige/1000)), more => easier target
+            pres = presElem.textContent;
+            ratio = land / pres * 1000; //land per 1000 prestige (land / (prestige/1000)), more => easier target
             ratio = document.createTextNode(' ' + ratio.toFixed(1) + 'km/p');
             targetLineCells[2].append(ratio);
+
+            //red color for targets with lower prestige
+            if (pres < myPres) {presElem.style.color = '#ffd9d9'}
         }
         console.log(`Tweak "${SETTINGS_KEYS.attacksTweaks}": Activated`);
     } else {
@@ -106,13 +112,15 @@ function tweak_quickSpecialInfiltrations() {
             let coveredBySilaRozvedky = techValues[TECH.silaRozvedky] * TECH_COVERAGE_MULTIPLIER;
             let uncoveredTechSum = 0;
             techValues.forEach(function(item, index) {uncoveredTechSum += Math.max(0, item - coveredBySilaRozvedky)}) // count uncovered
+            let techSteal = (STEAL_TECH_UNCOVERED * uncoveredTechSum) + (STEAL_TECH_COVERED * (sumArray(techValues) - uncoveredTechSum));
             // display total sum of tech
-            techNamesElem.innerHTML += '<br><span style="color:greenyellow;">Celkem</span>'
-            techValuesElem.innerHTML += `<br><span style="color:greenyellow;">${sumArray(techValues)}</span>`
+            techNamesElem.innerHTML += '<br><span style="color:greenyellow;">Celkem</span>';
+            techValuesElem.innerHTML += `<br><span style="color:greenyellow;">${sumArray(techValues)}</span>`;
             // display techs uncovered by silaRozvedky (= can be stolen)
-            techNamesElem.innerHTML += '<br><span style="color:orange;">Nepokryto</span>'
-            techValuesElem.innerHTML += `<br><span style="color:orange;">${uncoveredTechSum}</span>`
+            techNamesElem.innerHTML += '<br><span style="color:orange;">Nepokryto-krádež</span>';
+            techValuesElem.innerHTML += `<br><span style="color:orange;">${uncoveredTechSum}-${Math.round(techSteal)}</span>`;
 
+            // move important inf+bonus tables to top
             contentWindow.prepend(infiltrationBonuses, infiltrationDetails);
         } else if (selectInfiltrationButton) {
             console.debug('Selecting inf');
